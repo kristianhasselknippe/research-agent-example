@@ -1,6 +1,1 @@
-{
-  "packages": [
-    { "name": "open-ai", "version": "0.13.2" },
-    { "name": "tavily", "version": "0.1.0" }
-  ]
-}
+{"packages":[{"name":"google-drive","version":"0.1.6"},{"name":"tavily","version":"0.1.0"},{"name":"notion","version":"0.2.0"},{"name":"arxiv","version":"0.2.0"},{"name":"mistral","version":"0.1.6"},{"name":"google-docs","version":"0.2.0"},{"name":"google-sheets","version":"0.4.0"},{"name":"open-ai","version":"0.13.2"},{"name":"gmail","version":"0.2.0"}]}
