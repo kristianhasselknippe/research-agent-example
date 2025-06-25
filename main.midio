@@ -5,8 +5,13 @@ import("tavily", tavily_1810699956422469779)
 import("web-tools", ``web-tools_18042297422711746147``)
 import("arxiv", arxiv_8069601267462188468)
 import("mistral", mistral_17966346485340880396)
+import("notion", notion_4566404541544690076)
+import("google-sheets", ``google-sheets_6891016087837381``)
+import("google-docs", ``google-docs_13415516501609734782``)
+import("gmail", gmail_16626635424553548366)
+import("google-drive", ``google-drive_8677991977540275143``)
 
-module ``Shallow Research`` {
+module ``Shallow Research Agent`` {
     func ``Generate Research Tasks`` {
         in(x: 51.745161290322585, y: -135.50108741021927, name: "execute") trigger execute
         in(x: 49.745161290322585, y: 361.6344003985005, name: "user message") property(String) ``user message``
@@ -37,7 +42,7 @@ module ``Shallow Research`` {
         ``chat complete_067092``.continue_424660 -> continue
         ``chat complete_067092``.response_fdbba8 -> response
         ``user message`` -> ``chat complete_067092``.user_message_f55996
-        "You are a senior researcher. \nBreak the following question into **distinct, non‑overlapping** web research tasks. \nSpawn at least 3 tasks, at most 6.\nReturn an array of objects that conforms to the provided JSON Schema\"\"\"\"\"\"\"\"" -> ``chat complete_067092``.system_message_7d9447
+        "You are a senior researcher. \nBreak the following question into **distinct, non‑overlapping** web research tasks. \nSpawn at least 3 tasks, at most 6.\nReturn an array of objects that conforms to the provided JSON Schema\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" -> ``chat complete_067092``.system_message_7d9447
         "OPEN_AI_API_KEY_VAR" -> getenvironmentvariable_aa5ac2.variable_name
     }
 
@@ -118,52 +123,107 @@ module ``Shallow Research`` {
         setprocesscurrenttrace_75fff5.done -> complete_7bbe9e.execute
     }
 
+    func CORS {
+
+        out(x: 734.1842870117188, y: -29, name: "headers")  property Data
+
+        data_instance(x: 0.0, y: 0.0, stableId: "ytmtts3ac4084yxtqfow6u7g") data_01c5bc  = {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
+            }
+        data_01c5bc -> Data
+    }
+
+    module Lovable {
+        data_instance(x: -1065.9, y: -153.4, stableId: "hnqeau4kjp40xjftjwtyh5md") data_6330da  = "Build an application named \"Shallow Research\", which provides a single input field, where the user types a search query that they would like reserached, and a button to submit. Then send a request to\nhttps://ai-mad-lab-demo-2025.staging.midio.dev:3000/search\nwhere the users query string is in the body of the request.\n\nI also want a config panel where i can change the base url."
+        comment(x: -1065.9, y: -216.5, stableId: "ds8qhil839qhwko2x849n8ot") "# Prompt"
+    }
+
     instance(x: 638.7, y: 483.7, stableId: "vrbpu4nay3yo59cwxiy1ic2b") spawnprocessesfromlist_30487a root.Std_pvchbs.Process.SpawnProcessesFromList {}
     instance(x: 1361.1, y: 483.7, stableId: "eim5nl1vrsv2nrqb36077vyk") mergeall_9a070a root.Std_pvchbs.Process.MergeAll {}
-    instance(x: 619.6, y: 353.6, stableId: "kfnq6idd0lwmcpyx6xa2cjrg") ``generate research tasks_01d90b`` root.``Shallow Research``.``Generate Research Tasks`` {
+    instance(x: 619.6, y: 353.6, stableId: "kfnq6idd0lwmcpyx6xa2cjrg") ``generate research tasks_01d90b`` root.``Shallow Research Agent``.``Generate Research Tasks`` {
         response => response}
-    instance(x: 1054.8, y: 554.5, stableId: "d6b8zsfw55v1bjzrsu0iuz95") ``search web and summarize_f33570`` root.``Shallow Research``.``Search Web and Summarize`` {}
-    instance(x: 1667.5, y: 471.3, stableId: "h6fa8vstlmeesl71qpjhmr9n") ``create final response_71a94c`` root.``Shallow Research``.``Create Final Response`` {}
-    setter(x: 164.3, y: 450.2, stableId: "qley41stlfrztgr99thb84w4", name: "setter_fbb0a0") setter_fbb0a0 = userQuery
-    instance(x: 162.1, y: 297.6, stableId: "t66wq4ozenns10cjttiqxjpj") endpoint_a17c82 root.Http_cngvqt.Http.Endpoint {
+    instance(x: 1054.8, y: 554.5, stableId: "d6b8zsfw55v1bjzrsu0iuz95") ``search web and summarize_f33570`` root.``Shallow Research Agent``.``Search Web and Summarize`` {}
+    instance(x: 1667.5, y: 471.3, stableId: "h6fa8vstlmeesl71qpjhmr9n") ``create final response_71a94c`` root.``Shallow Research Agent``.``Create Final Response`` {}
+    instance(x: -164.6, y: 325.8, stableId: "t66wq4ozenns10cjttiqxjpj") endpoint_a17c82 root.Http_cngvqt.Http.Endpoint {
         path: "/search"
-        method: "GET"
+        method: "POST"
         accept: "text"}
-    instance(x: 2023.4, y: 448.5, stableId: "idb2fc7d5yvrybg9pze2tk3d") respondto_9a07ed root.Http_cngvqt.Http.RespondTo {}
+    instance(x: 2247.1, y: 445.8, stableId: "idb2fc7d5yvrybg9pze2tk3d") respondto_9a07ed root.Http_cngvqt.Http.RespondTo {}
+    data_instance(x: -200.7, y: -135.9, stableId: "y10f72ff94xgu9wvrtkrzm84") data_82c954  = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        }
+    instance(x: 53.9, y: -278.2, stableId: "c4t63fsa9yfzcf68vaulpofk") endpoint_010f43 root.Http_cngvqt.Http.Endpoint {
+        path: "/search"
+        method: "OPTIONS"
+        accept: "text"}
+    instance(x: 417.9, y: -235.2, stableId: "zwf3eczwbnx954anuiueqi2a") respondto_58a974 root.Http_cngvqt.Http.RespondTo {}
+    instance(x: 142.4, y: 479.2, stableId: "r2sulgeb2116hxvwqqyp1m03") parsed_63bc20 root.Std_pvchbs.Json.Parsed {}
+    waypoint(x: 203.0, y: 429.8, stableId: "tqk12n18tsfvgcy681pcbo9k") wp_ffa12a = query
+    setter(x: 363.4, y: 335.8, stableId: "edgbktxrpxoxp5a4r3nrzdtg", name: "setter_28621e") setter_28621e = userQuery
+    waypoint(x: 2070.7, y: 566.8, stableId: "dr6006y0v12z5qqnztikjzvl") wp_6745ff = content
+    instance(x: -216.1, y: 877.2, stableId: "foze12s3t04t0nwsnjsaqkmr") endpoint_814ccd root.Http_cngvqt.Http.Endpoint {
+        path: "/search2"
+        method: "POST"
+        accept: "text"}
+    instance(x: 225.3, y: 836.9, stableId: "oxlahdf9fuesc4ms7wwxyfdo") respondto_636cba root.Http_cngvqt.Http.RespondTo {}
+    instance(x: 30.4, y: 793.0, stableId: "ul2m6o1nnp3hk79lyj6d6e78") cors_4d1006 root.``Shallow Research Agent``.CORS {}
+    instance(x: 2067.6, y: 413.3, stableId: "fyybe4tcon03h1ou08zj3j09") cors_eb2c91 root.``Shallow Research Agent``.CORS {}
+    waypoint(x: 1349.3, y: 608.4, stableId: "elj9gh8y5kbz6a5wx6ss11l0") wp_e2a859 = content
     let expr_94c634 = #{@userQuery#}
     let expr_627554 = #{"gpt-4.1"#}
     let expr_255d70 = #{@userQuery#}
     let expr_81690d = #{@response.agents#}
+    let expr_9e9032 = #{{ result: "# Response\n\nHere is the result for: ${input}" }#}
+    let expr_ad4f2d = #{{ result: result }#}
     comment(x: 652.7, y: 289.9, stableId: "kdnhb2ph6xnz669sh2pfilaj") "# 1. Generate Tasks"
     comment(x: 1038.3, y: 678.2, stableId: "jm3vz0vz4ym8f4xhepi86taw") "# 2. Search and Summarize\n\nEach task is handled concurrently\n"
     comment(x: 1666.1, y: 390.9, stableId: "ernl20v48web6ipu1cti61gk") "# 3. Create final summary and response"
+    comment(x: 348.3, y: -296.6, stableId: "b10f4qlagoiejejignhyjuwa") "# CORS Preflight"
     spawnprocessesfromlist_30487a.done -> mergeall_9a070a.merge
     ``generate research tasks_01d90b``.continue -> spawnprocessesfromlist_30487a.spawn
     expr_94c634 -> ``generate research tasks_01d90b``.``user message``
     spawnprocessesfromlist_30487a.childSpawned -> ``search web and summarize_f33570``.search
     ``search web and summarize_f33570``.continue -> mergeall_9a070a.withChildProcess
     ``search web and summarize_f33570``.``on error`` -> mergeall_9a070a.withChildProcess
-    ``search web and summarize_f33570``.response -> mergeall_9a070a.result
     spawnprocessesfromlist_30487a.item -> ``search web and summarize_f33570``.item
     mergeall_9a070a.merged -> ``create final response_71a94c``.execute
     mergeall_9a070a.results -> ``create final response_71a94c``.input
     expr_627554 -> ``create final response_71a94c``.model
     expr_255d70 -> ``create final response_71a94c``.userQuery
     expr_81690d -> spawnprocessesfromlist_30487a.list
-    "What is the biggest hype in tech at the moment?" -> setter_fbb0a0.new_value
-    setter_fbb0a0.continue -> ``generate research tasks_01d90b``.execute
-    endpoint_a17c82.gotRequest -> setter_fbb0a0.execute
     200 -> respondto_9a07ed.status
     ``create final response_71a94c``.continue -> respondto_9a07ed.respond
-    ``create final response_71a94c``.response -> respondto_9a07ed.body
+    200 -> respondto_58a974.status
+    data_82c954 -> respondto_58a974.headers
+    endpoint_010f43.gotRequest -> respondto_58a974.respond
+    endpoint_a17c82.body -> parsed_63bc20.string
+    parsed_63bc20.value -> wp_ffa12a
+    endpoint_a17c82.gotRequest -> setter_28621e.execute
+    wp_ffa12a -> setter_28621e.new_value
+    setter_28621e.continue -> ``generate research tasks_01d90b``.execute
+    ``create final response_71a94c``.response -> wp_6745ff
+    200 -> respondto_636cba.status
+    endpoint_814ccd.gotRequest -> respondto_636cba.respond
+    cors_4d1006.Data -> respondto_636cba.headers
+    expr_9e9032 -> respondto_636cba.body
+    endpoint_814ccd.body -> expr_9e9032.input
+    expr_ad4f2d -> respondto_9a07ed.body
+    wp_6745ff -> expr_ad4f2d.result
+    cors_eb2c91.Data -> respondto_9a07ed.headers
+    ``search web and summarize_f33570``.response -> wp_e2a859
+    wp_e2a859 -> mergeall_9a070a.result
 }
 
 module Utils {
     func ``LLM Generate`` {
         in(x: -264.66656494140625, y: -56.99993896484375, name: "execute") trigger execute
         in(x: -491.12832530455336, y: 102.35139044564175, name: "model") property(String) model
-        in(x: -260.66668701171875, y: 257.00006103515625, name: "system message") property ``system message``
-        in(x: -260.66668701171875, y: 338.66668701171875, name: "user message") property ``user message``
+        in(x: -619.4767293641366, y: 255.7691704522764, name: "system message") property ``system message``
+        in(x: -758.569506398801, y: 458.0649329875106, name: "user message") property ``user message``
 
         out(x: 620.3333740234375, y: -26.6666259765625, name: "continue")  trigger continue
         out(x: 620.3333740234375, y: 91.33331298828124, name: "response")  property response
@@ -173,12 +233,14 @@ module Utils {
         instance(x: 49.4, y: 53.0, stableId: "ofmbily52vyn2x9sccqxay63") ``chat complete_166e23`` root.``open-ai_7339898628683819485``.OpenAI.``Chat Complete`` {}
         instance(x: -49.4, y: -53.0, stableId: "y11q0dt3uplgtvk3a17m3x60") getenvironmentvariable_3c1ce8 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
         instance(x: -294.5, y: 137.4, stableId: "d147514gk77yuwmcv1utg9op") orelse_1567fb root.Std_pvchbs.Std.OrElse {}
+        instance(x: -518.2, y: 382.2, stableId: "axfr4j2krccy0snfiwq27ws2") isstring_9fac92 root.Std_pvchbs.Std.IsString {}
+        instance(x: -234.5, y: 404.7, stableId: "vu8cnu3i2gmcwev6w6h8ggx9") choose_65dcc6 root.Std_pvchbs.Std.Choose {}
+        instance(x: -511.4, y: 532.1, stableId: "fdomhr6lvwz30707cdtyst7g") stringify_466063 root.Std_pvchbs.Json.Stringify {}
         let expr_94a0a8 = #{"gpt-4.1-nano"#}
         getenvironmentvariable_3c1ce8.value -> ``chat complete_166e23``.``api key_fba846``
         1 -> ``chat complete_166e23``.temperature_5a6319
         execute -> ``chat complete_166e23``.execute_f48897
         ``system message`` -> ``chat complete_166e23``.system_message_7d9447
-        ``user message`` -> ``chat complete_166e23``.user_message_f55996
         ``chat complete_166e23``.continue_424660 -> continue
         ``chat complete_166e23``.response_fdbba8 -> response
         ``chat complete_166e23``.``on error_61174a`` -> ``on error``
@@ -186,7 +248,55 @@ module Utils {
         expr_94a0a8 -> orelse_1567fb.second
         model -> orelse_1567fb.first
         orelse_1567fb.value -> ``chat complete_166e23``.model_596244
-        "OPEN_AI_API_KEY_VAR" -> getenvironmentvariable_3c1ce8.variable_name
+        "OPENAI_API_KEY" -> getenvironmentvariable_3c1ce8.variable_name
+        ``user message`` -> isstring_9fac92.input
+        isstring_9fac92.isString -> choose_65dcc6.predicate
+        choose_65dcc6.value -> ``chat complete_166e23``.user_message_f55996
+        ``user message`` -> choose_65dcc6.then
+        ``user message`` -> stringify_466063.json
+        stringify_466063.string -> choose_65dcc6.else
+        true -> stringify_466063.prettify
+    }
+
+    func ``LLM Generate JSON`` {
+        in(x: -264.66656494140625, y: -56.99993896484375, name: "execute") trigger execute
+        in(x: -491.12832530455336, y: 102.35139044564175, name: "model") property(String) model
+        in(x: -619.4767293641366, y: 255.7691704522764, name: "system message") property ``system message``
+        in(x: -758.569506398801, y: 458.0649329875106, name: "user message") property ``user message``
+
+        out(x: 620.3333740234375, y: -26.6666259765625, name: "continue")  trigger continue
+        out(x: 620.3333740234375, y: 91.33331298828124, name: "response")  property response
+        out(x: 631, y: 216.66668701171875, name: "on error")  trigger ``on error``
+        out(x: 659, y: 362, name: "error")  property error
+
+        instance(x: 49.4, y: 53.0, stableId: "zd2prndqi8ar5l6mje1y05ow") ``chat complete_166e23`` root.``open-ai_7339898628683819485``.OpenAI.``Chat Complete`` {}
+        instance(x: -49.4, y: -53.0, stableId: "mtbnzt80mjtwyhvv9bcjt5zw") getenvironmentvariable_3c1ce8 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        instance(x: -294.5, y: 137.4, stableId: "qs6i3nizso5d50z9wm23oomz") orelse_1567fb root.Std_pvchbs.Std.OrElse {}
+        instance(x: -518.2, y: 382.2, stableId: "tg443j7qwlpa4a0q3027jfac") isstring_9fac92 root.Std_pvchbs.Std.IsString {}
+        instance(x: -234.5, y: 404.7, stableId: "agnjhagr39xy9h0mrm36h9ky") choose_65dcc6 root.Std_pvchbs.Std.Choose {}
+        instance(x: -511.4, y: 532.1, stableId: "wcef5rx8r9ohvcqv5ucp9h47") stringify_466063 root.Std_pvchbs.Json.Stringify {}
+        let expr_ce063a = #{"gpt-4.1-nano"#}
+        let expr_e8f4fe = #{"json_object"#}
+        getenvironmentvariable_3c1ce8.value -> ``chat complete_166e23``.``api key_fba846``
+        1 -> ``chat complete_166e23``.temperature_5a6319
+        execute -> ``chat complete_166e23``.execute_f48897
+        ``system message`` -> ``chat complete_166e23``.system_message_7d9447
+        ``chat complete_166e23``.continue_424660 -> continue
+        ``chat complete_166e23``.response_fdbba8 -> response
+        ``chat complete_166e23``.``on error_61174a`` -> ``on error``
+        ``chat complete_166e23``.error_3ce8b8 -> error
+        expr_ce063a -> orelse_1567fb.second
+        model -> orelse_1567fb.first
+        orelse_1567fb.value -> ``chat complete_166e23``.model_596244
+        "OPENAI_API_KEY" -> getenvironmentvariable_3c1ce8.variable_name
+        ``user message`` -> isstring_9fac92.input
+        isstring_9fac92.isString -> choose_65dcc6.predicate
+        choose_65dcc6.value -> ``chat complete_166e23``.user_message_f55996
+        ``user message`` -> choose_65dcc6.then
+        ``user message`` -> stringify_466063.json
+        stringify_466063.string -> choose_65dcc6.else
+        true -> stringify_466063.prettify
+        expr_e8f4fe -> ``chat complete_166e23``.``response format_1a4c38``
     }
 
 }
@@ -261,49 +371,91 @@ module Tools {
 
 }
 
-module ``Arxiv Test`` {
-    instance(x: 687.9, y: -475.4, stableId: "ydc0oz8xh342eaaia66ancex") ``download paper from arxiv in pdf format_d65068`` root.arxiv_8069601267462188468.arXiv.``Download Paper From arXiv in PDF Format`` {}
-    instance(x: -653.7, y: -351.7, stableId: "w12k9o1cng3cgbhg7j1kcn9o") ``search papers on arxiv_7bb35d`` root.arxiv_8069601267462188468.arXiv.``Search Papers on arXiv`` {}
-    instance(x: -100.3, y: -309.7, stableId: "p129vid2r77em4qjajd3hmbg") parse_96894a root.Std_pvchbs.Xml.Parse {}
-    instance(x: 315.0, y: -226.6, stableId: "zv4ihi0vtcvkqnvl74u6w0pu") foreach_45e623 root.Std_pvchbs.Std.ForEach {}
-    waypoint(x: -46.0, y: -103.5, stableId: "p2edc37p43v866aqlfd59y2h") wp_098799 = entry
-    instance(x: 91.7, y: -125.7, stableId: "n806jaapmp1pr2u4mhdf4rfq") slice_4af3fa root.Std_pvchbs.List.Slice {}
-    instance(x: 589.2, y: -108.2, stableId: "ogfpx74hai5djrb812oymhz6") log_814c39 root.Std_pvchbs.Std.Log {}
-    waypoint(x: 638.1, y: -242.4, stableId: "spasgi52x5n1bosykc4ns49x") wp_938ba6 = id.``$text``
-    data_instance(x: -388.2, y: -1296.5, stableId: "csbd4afhbhy9c7o75a3f49gx") data_f56300  = {
-            "published": {
-                "$text": "2019-09-08T21:49:42Z"
-            },
-            "summary": {
-                "$text": "Lecture notes on optimization for machine learning, derived from a course at\nPrinceton University and tutorials given in MLSS, Buenos Aires, as well as\nSimons Foundation, Berkeley."
-            },
-            "updated": {
-                "$text": "2019-09-08T21:49:42Z"
-            },
-            "author": {
-                "name": {
-                    "$text": "Elad Hazan"
-                }
-            },
-            "title": {
-                "$text": "Lecture Notes: Optimization for Machine Learning"
-            },
-            "id": {
-                "$text": "http://arxiv.org/abs/1909.03550v1"
-            }
+module ``Arxiv Tracker`` {
+    func ``Search arXiv`` {
+        in(x: -250.25948154470737, y: -50.56082634005173, name: "run") trigger run
+        in(x: -252.25948154470737, y: 140.2153651359536, name: "search query") property(String) ``search query``
+        in(x: -264.25948154470734, y: 242.9915566119589, name: "max results") property(Number) ``max results``
+
+        out(x: 1295.1743652265818, y: -58.21696129131956, name: "done")  trigger done
+        out(x: 1874.376371215688, y: 65.43725865943291, name: "result")  property result
+
+        instance(x: 0.0, y: 0.0, stableId: "k7ko3e7n9x2ya6jydohuu9ig") ``search papers on arxiv_fef09a`` root.arxiv_8069601267462188468.arXiv.``Search Papers on arXiv`` {}
+        instance(x: 564.3, y: -0.3, stableId: "zbs668hqpgkhp94b7r7tj1wb") parse_d28db1 root.Std_pvchbs.Xml.Parse {}
+        instance(x: 1295.2, y: 112.4, stableId: "q14ow56kb0qr9y1198djndyh") map_d803ae root.Std_pvchbs.Iteration.Map {}
+        waypoint(x: 834.2, y: 112.4, stableId: "m11a5som300028zi5oeecdon") wp_329085 = entry
+        instance(x: 987.7, y: 112.4, stableId: "au5y8sf31gqu88babrkcvv58") flatten_5afeb5 root.Std_pvchbs.List.Flatten {}
+        let expr_ec8fa6 = #{[entry]#}
+        0 -> ``search papers on arxiv_fef09a``.start
+        "application/atom+xml" -> ``search papers on arxiv_fef09a``.accept
+        ``search query`` -> ``search papers on arxiv_fef09a``.``search query``
+        run -> ``search papers on arxiv_fef09a``.run
+        ``search papers on arxiv_fef09a``.done -> parse_d28db1.parse
+        ``search papers on arxiv_fef09a``.result -> parse_d28db1.string
+        parse_d28db1.parsed -> done
+        parse_d28db1.value -> wp_329085
+        map_d803ae.outputList -> result
+        func {
+    in(x: -44.77395550638778, y: 248.06442598112767, name: "item") property item
+
+    out(x: 964.5604471959472, y: 246.2379891611531, name: "result")  property result
+
+    data_instance(x: 518.5, y: 203.0, stableId: "b10qd53kkondns1zpb9gzjfa") data_0d220a  = {
+            title: title,
+            updated: updated,
+            published: published,
+            id: id,
+            author: author,
+            summary: summary
         }
-    waypoint(x: 175.3, y: -1325.6, stableId: "coa9pm2krsmpwy3wu01kvga7") wp_df62da = id.``$text``
-    instance(x: 752.0, y: -1166.8, stableId: "qs77z1r19370c8ndsf0p0p2r") fetch_f3f8ce root.Http_cngvqt.Http.Fetch {}
-    instance(x: 1407.2, y: -1165.4, stableId: "lhdfpk3p42ompf0glaec3uko") ``ocr on file_2e9791`` root.mistral_17966346485340880396.Mistral.``OCR API``.``OCR on File`` {}
-    instance(x: 1247.7, y: -1279.1, stableId: "f4xfsoubu9x0mejzjun1vau9") getenvironmentvariable_b37085 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
-    data_instance(x: 731.1, y: -831.0, stableId: "t56w6g6fq5mksymux81y3a87") data_809246  = "1909.03550v1"
-    instance(x: 1953.4, y: -1216.9, stableId: "enr4o20hqghhze7d9qwr8uj7") log_8f9ecd root.Std_pvchbs.Std.Log {}
-    instance(x: 1953.4, y: -1048.2, stableId: "wrvt80uv854aavlt71v93lmm") log_d6529b root.Std_pvchbs.Std.Log {}
-    instance(x: 447.2, y: -1278.9, stableId: "hfsmbmz8kdwsl1auxcvcnl8b") entrypoint_fba49b root.Std_pvchbs.Std.Entrypoint {
-        entrypointName: "PDF OCR"
+    waypoint(x: 264.1, y: 185.9, stableId: "snkll2m0rmpesztg36uo00q8") wp_9a1125 = title.``$text``
+    waypoint(x: 264.1, y: 229.9, stableId: "t7sco081xmpezkowk9ajry3r") wp_81b6c6 = updated.``$text``
+    waypoint(x: 264.1, y: 269.7, stableId: "wswwe9c4z8b34eif8bze0o92") wp_5fc48b = published.``$text``
+    waypoint(x: 264.1, y: 314.4, stableId: "x10690hdsy6re5x5vmwikn1l") wp_5e2a77 = id.``$text``
+    waypoint(x: 264.1, y: 358.7, stableId: "uur0xpr71rrn8u1jcelq84wb") wp_afb054 = author
+    waypoint(x: 264.1, y: 411.5, stableId: "bufhdsov8pf1ku2iyltasmwb") wp_8cf3dc = summary.``$text``
+    item -> wp_9a1125
+    wp_9a1125 -> data_0d220a.title
+    item -> wp_81b6c6
+    wp_81b6c6 -> data_0d220a.updated
+    item -> wp_5fc48b
+    wp_5fc48b -> data_0d220a.published
+    item -> wp_5e2a77
+    wp_5e2a77 -> data_0d220a.id
+    item -> wp_afb054
+    wp_afb054 -> data_0d220a.author
+    item -> wp_8cf3dc
+    wp_8cf3dc -> data_0d220a.summary
+    data_0d220a -> result
+}
+ -> map_d803ae.handler
+        "submittedDate" -> ``search papers on arxiv_fef09a``.``sort by``
+        "descending" -> ``search papers on arxiv_fef09a``.``sort order``
+        ``max results`` -> ``search papers on arxiv_fef09a``.``max results``
+        expr_ec8fa6 -> flatten_5afeb5.items
+        wp_329085 -> expr_ec8fa6.entry
+        flatten_5afeb5.flattened -> map_d803ae.items
+    }
+
+    instance(x: 2339.0, y: 443.1, stableId: "ydc0oz8xh342eaaia66ancex") ``download paper from arxiv in pdf format_d65068`` root.arxiv_8069601267462188468.arXiv.``Download Paper From arXiv in PDF Format`` {}
+    instance(x: 863.5, y: 539.9, stableId: "w12k9o1cng3cgbhg7j1kcn9o") ``search papers on arxiv_7bb35d`` root.arxiv_8069601267462188468.arXiv.``Search Papers on arXiv`` {}
+    instance(x: 1416.9, y: 581.9, stableId: "p129vid2r77em4qjajd3hmbg") parse_96894a root.Std_pvchbs.Xml.Parse {}
+    instance(x: 1832.2, y: 665.0, stableId: "zv4ihi0vtcvkqnvl74u6w0pu") foreach_45e623 root.Std_pvchbs.Std.ForEach {}
+    waypoint(x: 1471.2, y: 788.1, stableId: "p2edc37p43v866aqlfd59y2h") wp_098799 = entry
+    instance(x: 1608.9, y: 765.9, stableId: "n806jaapmp1pr2u4mhdf4rfq") slice_4af3fa root.Std_pvchbs.List.Slice {}
+    instance(x: 2106.4, y: 783.4, stableId: "ogfpx74hai5djrb812oymhz6") log_814c39 root.Std_pvchbs.Std.Log {}
+    waypoint(x: 2169.1, y: 674.8, stableId: "spasgi52x5n1bosykc4ns49x") wp_938ba6 = id.``$text``
+    instance(x: 1035.1, y: -51.8, stableId: "wgql3gck1ji9w7kryhdshm9h") ``search arxiv_4eab6f`` root.``Arxiv Tracker``.``Search arXiv`` {}
+    instance(x: 660.3, y: -51.8, stableId: "cab50gcnoa0io33pgpihtsp6") entrypoint_9a4b3d root.Std_pvchbs.Std.Entrypoint {
+        entrypointName: "Search arXiv"
         runOnLaunch: false}
-    let expr_e3cf99 = #{"http://arxiv.org/pdf/${id}"#}
-    let expr_e22284 = #{"application/pdf"#}
+    instance(x: 1407.6, y: -53.5, stableId: "z11q27equ6wyb3fm9vq9euf8") spawnprocessesfromlist_567205 root.Std_pvchbs.Process.SpawnProcessesFromList {}
+    instance(x: 1771.5, y: 39.2, stableId: "yaut96oxh6zpr8tq7pljq1fs") ``llm generate_f99944`` root.Utils.``LLM Generate`` {}
+    instance(x: 2246.8, y: -53.5, stableId: "gfx8zcrabbd69npx8ujl5fop") mergeall_37065a root.Std_pvchbs.Process.MergeAll {}
+    instance(x: 2576.5, y: -57.0, stableId: "flde07kj7dox2nopqi5yx65x") ``llm generate_4b7901`` root.Utils.``LLM Generate`` {}
+    let expr_153c32 = #{"gpt-4.1-mini"#}
+    let expr_64ab4f = #{"gpt-4.1-nano"#}
+    comment(x: 1019.2, y: -144.9, stableId: "z12ujh6ig0jtmlcamqi6mkuq") "# Get the latest papers in your given category"
     "application/pdf" -> ``download paper from arxiv in pdf format_d65068``.accept
     0 -> ``search papers on arxiv_7bb35d``.start
     10 -> ``search papers on arxiv_7bb35d``.``max results``
@@ -325,22 +477,330 @@ module ``Arxiv Test`` {
     foreach_45e623.done -> log_814c39.log
     foreach_45e623.item -> wp_938ba6
     wp_938ba6 -> ``download paper from arxiv in pdf format_d65068``.``paper id``
-    data_f56300 -> wp_df62da
-    "GET" -> fetch_f3f8ce.method
-    "buffer" -> fetch_f3f8ce.responseType
-    "MISTRAL_API_KEY" -> getenvironmentvariable_b37085.variable_name
-    getenvironmentvariable_b37085.value -> ``ocr on file_2e9791``.``api key_2aba2e``
-    "mistral-ocr-latest" -> ``ocr on file_2e9791``.model_5e6e2d
-    expr_e3cf99 -> fetch_f3f8ce.url
-    data_809246 -> expr_e3cf99.id
-    data_809246 -> ``ocr on file_2e9791``.``file name_bcfaa4``
-    expr_e22284 -> ``ocr on file_2e9791``.``content-type_45502d``
-    fetch_f3f8ce.done -> ``ocr on file_2e9791``.upload_04f26b
-    fetch_f3f8ce.response -> ``ocr on file_2e9791``.``file data_eb5a50``
-    ``ocr on file_2e9791``.done_6488ec -> log_8f9ecd.log
-    ``ocr on file_2e9791``.response_643027 -> log_8f9ecd.input
-    ``ocr on file_2e9791``.failed_31e866 -> log_d6529b.log
-    ``ocr on file_2e9791``.value_25f3e4 -> log_d6529b.input
-    entrypoint_fba49b.started -> fetch_f3f8ce.fetch
+    entrypoint_9a4b3d.started -> ``search arxiv_4eab6f``.run
+    "cat:cs.AI" -> ``search arxiv_4eab6f``.``search query``
+    ``search arxiv_4eab6f``.result -> spawnprocessesfromlist_567205.list
+    ``search arxiv_4eab6f``.done -> spawnprocessesfromlist_567205.spawn
+    expr_153c32 -> ``llm generate_f99944``.model
+    spawnprocessesfromlist_567205.item -> ``llm generate_f99944``.``user message``
+    spawnprocessesfromlist_567205.childSpawned -> ``llm generate_f99944``.execute
+    ``llm generate_f99944``.continue -> mergeall_37065a.withChildProcess
+    ``llm generate_f99944``.response -> mergeall_37065a.result
+    spawnprocessesfromlist_567205.done -> mergeall_37065a.merge
+    "You are a research paper summary summarizer. \nYou are given the summary of a research paper, \nas well as meta data about the paper, \nlike its author, and you should boil it down to a short paragraph,\n1-2 sentences that explains the paper and how it is relevant.\n\nThe summary should be SUPER short! Use bullet points to make it more readable." -> ``llm generate_f99944``.``system message``
+    mergeall_37065a.merged -> ``llm generate_4b7901``.execute
+    expr_64ab4f -> ``llm generate_4b7901``.model
+    "You are a given a set of research paper summaries. Your task if to format those summaries nicely using markdown, and then end with a paragraph that clearly summarizes everything to give the reader an idea of what the articles have in common.\n\nThe articles are all the 'latest research papers' within a given topic. Use that information to make the summary as relevant as possible to a user who is trying to stay as up to date as possible with the current state of the art." -> ``llm generate_4b7901``.``system message``
+    mergeall_37065a.results -> ``llm generate_4b7901``.``user message``
+    1 -> ``search arxiv_4eab6f``.``max results``
+}
+
+module ``OCR Using Mistral`` {
+    instance(x: 1037.1, y: 401.8, stableId: "iu3fqiqwuk4ul5wd5tpy326u") ``ocr url_b85954`` root.mistral_17966346485340880396.Mistral.``OCR API``.``OCR Url`` {}
+    instance(x: 646.0, y: 425.8, stableId: "li1co1kay71gxaf61xrppria") getenvironmentvariable_ef159b root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+    data_instance(x: 608.0, y: 522.8, stableId: "xoe5m0zpqf3fy5i15e61tm92") data_f9d545  = "https://arxiv.org/pdf/2506.19852v1"
+    instance(x: 633.0, y: 307.2, stableId: "y11gmwbba1xkly7bgkji0mbo") entrypoint_47f643 root.Std_pvchbs.Std.Entrypoint {
+        entrypointName: "Mistral OCR"
+        runOnLaunch: false}
+    "MISTRAL_API_KEY" -> getenvironmentvariable_ef159b.variable_name
+    getenvironmentvariable_ef159b.value -> ``ocr url_b85954``.headers_7682f9
+    "mistral-ocr-latest" -> ``ocr url_b85954``.model_578706
+    data_f9d545 -> ``ocr url_b85954``.document_url_86638b
+    "Radial Attention for Efficient Video Diffusion" -> ``ocr url_b85954``.documentName_2413a9
+    entrypoint_47f643.started -> ``ocr url_b85954``.fetch_f7fb44
+}
+
+module Notion {
+    func ``Get Block by ID`` {
+        in(x: -209.77308538626573, y: 59.93522194321433, name: "get") trigger fetch
+        in(x: -684.4252733445186, y: 338.2435549303684, name: "access token") property(Any) auth
+        in(x: -200.77308538626573, y: 243.08938843679135, name: "block_id") property block_id
+
+        out(x: 751.2805897275373, y: 41.11829948732537, name: "done")  trigger done
+        out(x: 751.2805897275373, y: 160.9886795687592, name: "response")  property response
+        out(x: 751.2805897275373, y: 284.692080912786, name: "failed")  trigger failed
+        out(x: 751.2805897275373, y: 403.5170799580591, name: "message")  property message
+
+        instance(x: 136.1, y: 135.3, stableId: "kurir5fhixzx7lcph6d46lpm") fetch_0d239a root.Http_cngvqt.Http.Fetch {}
+        data_instance(x: -463.8, y: 338.2, stableId: "e42tt2dy43jy6f1f7kyf5bip") data_2e971f  = [
+                {
+                    "Notion-Version": "2022-06-28"
+                },
+                {
+                    "Authorization": auth
+                }
+            ]
+        let expr_1375d2 = #{"https://api.notion.com/v1/blocks/${block_id}/children"#}
+        data_2e971f -> fetch_0d239a.headers
+        "json" -> fetch_0d239a.responseType
+        "GET" -> fetch_0d239a.method
+        expr_1375d2 -> fetch_0d239a.url
+        auth -> data_2e971f.auth
+        fetch -> fetch_0d239a.fetch
+        fetch_0d239a.done -> done
+        fetch_0d239a.response -> response
+        fetch_0d239a.failed -> failed
+        fetch_0d239a.message -> message
+        block_id -> expr_1375d2.block_id
+    }
+
+    instance(x: -472.0, y: -167.1, stableId: "kr5m3bgwaltjx0q6qfycw321") ``get page by id_60fddd`` root.notion_4566404541544690076.Notion.``Get Page by ID`` {}
+    instance(x: -472.0, y: 70.1, stableId: "ugcxqhuzz9tphl9flrzhznla") ``search pages with integration share_9d6b3c`` root.notion_4566404541544690076.Notion.``Search Pages with Integration Share`` {}
+    instance(x: -990.3, y: -32.7, stableId: "x7rmnls7mk18vl4rqzwio3nh") getenvironmentvariable_39c901 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+    instance(x: -901.6, y: -239.3, stableId: "atwpw11vkxei9q5f8o0jxnld") getenvironmentvariable_2b0035 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+    instance(x: -472.0, y: -345.4, stableId: "lg4i3u0k5t1hhr3yhry8b27w") ``get block by id_f1b56c`` root.Notion.``Get Block by ID`` {}
+    "2022-06-28" -> ``get page by id_60fddd``.``notion-version``
+    "2022-06-28" -> ``search pages with integration share_9d6b3c``.``notion-version``
+    100 -> ``search pages with integration share_9d6b3c``.``page size``
+    "NOTION_API_KEY_VAR" -> getenvironmentvariable_39c901.variable_name
+    getenvironmentvariable_39c901.value -> ``get page by id_60fddd``.``access token``
+    getenvironmentvariable_39c901.value -> ``search pages with integration share_9d6b3c``.``access token``
+    "variables" -> ``search pages with integration share_9d6b3c``.query
+    "560d4433-99e8-4872-a91f-b97726c94b76" -> ``get page by id_60fddd``.``page id``
+    "NOTION_API_KEY_VAR" -> getenvironmentvariable_2b0035.variable_name
+    getenvironmentvariable_2b0035.value -> ``get block by id_f1b56c``.auth
+}
+
+module Google {
+    func ``Search for Logo`` {
+        in(x: -567.1082292774448, y: -21.242874080025786, name: "search") trigger fetch
+        in(x: -570.1082292774448, y: 166.90813758052127, name: "company name") property(String) companyName
+
+        out(x: 666.8737844632064, y: -100.14486865659076, name: "done")  trigger done
+        out(x: 666.8737844632064, y: 12.13879511124469, name: "logo url")  property(String) value
+        out(x: 385.78541576070415, y: 116.45638978139688, name: "failed")  trigger failed
+        out(x: 385.78541576070415, y: 233.2920930336228, name: "message")  property message
+
+        instance(x: -273.2, y: 0.1, stableId: "on4xncww6l4bof1dmjrhu6eo") search_735179 root.tavily_1810699956422469779.Tavily.Search {}
+        instance(x: -301.7, y: -87.8, stableId: "xt2neou6bjejap7alwjnla20") getenvironmentvariable_d6d010 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        instance(x: 385.8, y: -73.9, stableId: "fhii0alz1ugr1vvesjbo10x8") cache_b56258 root.Std_pvchbs.Std.Cache {}
+        waypoint(x: 199.2, y: 34.2, stableId: "flf3hwkliebdphjw3bc1nyez") wp_a1b0b8 = images.0
+        let expr_d21d08 = #{"${companyName} Logo PNG"#}
+        search_735179.done_1 -> cache_b56258.cache
+        search_735179.response_0 -> wp_a1b0b8
+        getenvironmentvariable_d6d010.value -> search_735179.api_key
+        wp_a1b0b8 -> cache_b56258.input
+        "general" -> search_735179.topic_31f936
+        3 -> search_735179.chunks_per_source
+        false -> search_735179.include_answer
+        false -> search_735179.include_raw_content
+        false -> search_735179.include_image_descriptions
+        3 -> search_735179.max_results
+        true -> search_735179.include_images
+        "TAVILY_API_KEY_VAR" -> getenvironmentvariable_d6d010.variable_name
+        expr_d21d08 -> search_735179.query
+        companyName -> expr_d21d08.companyName
+        fetch -> search_735179.fetch_2
+        search_735179.failed_10060b -> failed
+        search_735179.message_3cc2ae -> message
+        cache_b56258.done -> done
+        cache_b56258.value -> value
+    }
+
+    func ``Get Spreadsheet Data`` {
+        in(x: -305.9295370570965, y: -129.55343730452728, name: "run") trigger run
+        in(x: -305.9295370570965, y: -9.553437304527279, name: "spreadsheet id") property(String) ``spreadsheet id``
+
+        out(x: 385.9295370570965, y: -129.55343730452728, name: "done")  trigger done
+        out(x: 385.9295370570965, y: 20.44656269547272, name: "result")  property result
+
+        instance(x: 105.9, y: 49.6, stableId: "p7s2zeyh3q5kb8foqxn661gp") ``retrieve data from spreadsheet range_4b4533`` root.``google-sheets_6891016087837381``.``Google Sheets``.``Retrieve Data From Spreadsheet Range`` {}
+        instance(x: -105.9, y: -49.6, stableId: "mlg5jlbxlyhgg7g2v3x39tch") getenvironmentvariable_f12640 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        getenvironmentvariable_f12640.value -> ``retrieve data from spreadsheet range_4b4533``.``access token``
+        "FORMATTED_VALUE" -> ``retrieve data from spreadsheet range_4b4533``.``value render option``
+        "SERIAL_NUMBER" -> ``retrieve data from spreadsheet range_4b4533``.``date time render option``
+        "Sheet1" -> ``retrieve data from spreadsheet range_4b4533``.range
+        "GOOGLE_ACCESS_TOKEN" -> getenvironmentvariable_f12640.variable_name
+        run -> ``retrieve data from spreadsheet range_4b4533``.run
+        ``spreadsheet id`` -> ``retrieve data from spreadsheet range_4b4533``.``spreadsheet id``
+        ``retrieve data from spreadsheet range_4b4533``.done -> done
+        ``retrieve data from spreadsheet range_4b4533``.result -> result
+    }
+
+    func ``For Each Row`` {
+        in(x: -430.91869479642423, y: -216.59099862355345, name: "spawn") trigger spawn
+        in(x: -421.91869479642423, y: -23.72434212941289, name: "sheet values") property wp_07deaa
+
+        out(x: 533.7892753072415, y: -300.59102914113157, name: "done")  trigger(produces: Std_pvchbs.Std.FanOutParentContext) done
+        out(x: 815.513042765759, y: -130.8806255524208, name: "child spawned")  trigger(produces: Std_pvchbs.Std.ForkChildContext) ``child spawned``
+        out(x: 845.9827579474646, y: 162.16191978495584, name: "row number")  property index
+        out(x: 819.0067989938658, y: 21.11183227908896, name: "value")  property(Any) ``Item at Index``
+
+        waypoint(x: -175.6, y: 63.9, stableId: "s14f0ghj0hnc3zxo6q9kr71f") wp_7b63d5 = values
+        instance(x: 66.9, y: -115.9, stableId: "c8lhr1q5yw65thylbvwkjh0d") spawnprocessesfromrange_f99d1a root.Std_pvchbs.Process.SpawnProcessesFromRange {}
+        instance(x: -145.8, y: -20.1, stableId: "t13gicdukmn3mswmi36ukcy4") length_512e45 root.Std_pvchbs.List.Length {}
+        instance(x: 156.5, y: 37.4, stableId: "nezkeyftc44ssenpqu6ts28o") getat_012fae root.Std_pvchbs.List.GetAt {}
+        instance(x: 610.2, y: 162.2, stableId: "u11qqpnsxyc05vedh0y9i1o2") add_6efe48 root.Std_pvchbs.Math.Add {}
+        instance(x: 581.8, y: -84.8, stableId: "b6w2lcf8xqjz727sey8h6j4y") cache_d28a1d root.Std_pvchbs.Std.Cache {}
+        wp_7b63d5 -> length_512e45.list
+        wp_7b63d5 -> getat_012fae.list
+        spawnprocessesfromrange_f99d1a.index -> getat_012fae.index
+        length_512e45.length -> spawnprocessesfromrange_f99d1a.to
+        0 -> spawnprocessesfromrange_f99d1a.from
+        spawn -> spawnprocessesfromrange_f99d1a.spawn
+        wp_07deaa -> wp_7b63d5
+        spawnprocessesfromrange_f99d1a.done -> done
+        spawnprocessesfromrange_f99d1a.index -> add_6efe48.first
+        1 -> add_6efe48.second
+        add_6efe48.result -> index
+        spawnprocessesfromrange_f99d1a.childSpawned -> cache_d28a1d.cache
+        cache_d28a1d.done -> ``child spawned``
+        getat_012fae.itemAtIndex -> cache_d28a1d.input
+        cache_d28a1d.value -> ``Item at Index``
+    }
+
+    func ``Set Value at Row:Column`` {
+        in(x: -282.8998777010438, y: -67.06867845993756, name: "run") trigger run
+        in(x: -284.8998777010438, y: 109.13414184062216, name: "spreadsheet id") property(String) ``spreadsheet id``
+        in(x: -297.8998777010438, y: 285.53978244174164, name: "row") property(Number) row
+        in(x: -297.8998777010438, y: 197.33696214118189, name: "column") property(String) col
+        in(x: -273.8998777010438, y: 373.7426027423013, name: "value") property value
+
+        out(x: 718.8692599007788, y: -52.76066597294488, name: "done")  trigger done
+        out(x: 718.8692599007788, y: 91.19470679540828, name: "result")  property result
+        out(x: 718.8692599007788, y: 193.15007956376144, name: "failed")  trigger failed
+        out(x: 718.8692599007788, y: 337.1054523321145, name: "error message")  property ``error message``
+
+        instance(x: 23.5, y: 43.0, stableId: "ig1k896hm4asjdf0zsqcy7tm") ``set values in google sheets_8e5019`` root.``google-sheets_6891016087837381``.``Google Sheets``.``Set Values in Google Sheets`` {}
+        instance(x: -23.5, y: -43.0, stableId: "crgzrwsz6savpr982spfnjc2") getenvironmentvariable_400db5 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        let expr_27c8f4 = #{"${col}${row}"#}
+        let expr_bb421d = #{[[ value ]]#}
+        getenvironmentvariable_400db5.value -> ``set values in google sheets_8e5019``.``access token``
+        "FORMATTED_VALUE" -> ``set values in google sheets_8e5019``.``response value render option``
+        "SERIAL_NUMBER" -> ``set values in google sheets_8e5019``.``response date time render option``
+        "USER_ENTERED" -> ``set values in google sheets_8e5019``.``value input option``
+        "GOOGLE_ACCESS_TOKEN" -> getenvironmentvariable_400db5.variable_name
+        run -> ``set values in google sheets_8e5019``.run
+        ``spreadsheet id`` -> ``set values in google sheets_8e5019``.``spreadsheet id``
+        ``set values in google sheets_8e5019``.done -> done
+        expr_27c8f4 -> ``set values in google sheets_8e5019``.range
+        row -> expr_27c8f4.row
+        col -> expr_27c8f4.col
+        expr_bb421d -> ``set values in google sheets_8e5019``.values
+        value -> expr_bb421d.value
+        ``set values in google sheets_8e5019``.result -> result
+        ``set values in google sheets_8e5019``.failed -> failed
+        ``set values in google sheets_8e5019``.``error message`` -> ``error message``
+    }
+
+    func ``New Spreadsheet`` {
+        in(x: -406.3333333333333, y: -184.3, name: "run") trigger run
+        in(x: -517.6666259765625, y: 78, name: "title") property title
+
+        out(x: 787.3334147135417, y: -116.96662597656253, name: "done")  trigger done
+        out(x: 787.3334147135417, y: 34.24447835286456, name: "spreadsheet id")  property(String) result
+        out(x: 787.3334147135417, y: 143.45558268229166, name: "failed")  trigger failed
+        out(x: 787.3334147135417, y: 294.66668701171875, name: "error message")  property ``error message``
+
+        instance(x: 140.7, y: -16.3, stableId: "v9os368f2jokexdlowvxghhb") ``create new spreadsheet_aa47ff`` root.``google-sheets_6891016087837381``.``Google Sheets``.``Create New Spreadsheet`` {}
+        instance(x: 65.7, y: -104.3, stableId: "qh3orzckevesv1v1p3o41wo5") getenvironmentvariable_db8ae4 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        data_instance(x: -285.7, y: 65.3, stableId: "tl7zito62daak1mfxf4qi15f") data_cc71c6  = {
+                title: title
+            }
+        waypoint(x: 607.0, y: 72.0, stableId: "e7hoa4ikhtgy2zz4oshzrn5g") wp_0f913a = spreadsheetId
+        getenvironmentvariable_db8ae4.value -> ``create new spreadsheet_aa47ff``.``access token``
+        data_cc71c6 -> ``create new spreadsheet_aa47ff``.properties
+        "GOOGLE_ACCESS_TOKEN" -> getenvironmentvariable_db8ae4.variable_name
+        run -> ``create new spreadsheet_aa47ff``.run
+        ``create new spreadsheet_aa47ff``.done -> done
+        title -> data_cc71c6.title
+        ``create new spreadsheet_aa47ff``.result -> wp_0f913a
+        wp_0f913a -> result
+        ``create new spreadsheet_aa47ff``.failed -> failed
+        ``create new spreadsheet_aa47ff``.``error message`` -> ``error message``
+    }
+
+    func ``Append Values to Spreadsheet`` {
+        in(x: -298.7137957994422, y: -133.36486820147695, name: "append") trigger run
+        in(x: -291.38048281116096, y: 208.6350707633668, name: "spreadsheet id") property(String) ``spreadsheet id``
+        in(x: -314.38048281116096, y: 295.3016967399293, name: "values") property(List) values
+
+        out(x: 821.3333740234375, y: -83, name: "done")  trigger done
+        out(x: 821.3333740234375, y: 58.77779134114584, name: "result")  property result
+        out(x: 821.3333740234375, y: 158.55558268229169, name: "failed")  trigger failed
+        out(x: 821.3333740234375, y: 300.3333740234375, name: "error message")  property ``error message``
+
+        instance(x: 98.7, y: 53.4, stableId: "krjbb9rvkw33f98uj8y70m8m") ``append values to spreadsheet_05a560`` root.``google-sheets_6891016087837381``.``Google Sheets``.``Append Values to Spreadsheet`` {}
+        instance(x: -98.7, y: -53.4, stableId: "h14k41i4hczadlcxe3hotgu6") getenvironmentvariable_c91bea root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        getenvironmentvariable_c91bea.value -> ``append values to spreadsheet_05a560``.``access token``
+        "FORMATTED_VALUE" -> ``append values to spreadsheet_05a560``.``response value render option``
+        "SERIAL_NUMBER" -> ``append values to spreadsheet_05a560``.``response date time render option``
+        "INSERT_ROWS" -> ``append values to spreadsheet_05a560``.``insert data option``
+        "USER_ENTERED" -> ``append values to spreadsheet_05a560``.``value input option``
+        "A1" -> ``append values to spreadsheet_05a560``.range
+        "GOOGLE_ACCESS_TOKEN" -> getenvironmentvariable_c91bea.variable_name
+        run -> ``append values to spreadsheet_05a560``.run
+        values -> ``append values to spreadsheet_05a560``.values
+        ``spreadsheet id`` -> ``append values to spreadsheet_05a560``.``spreadsheet id``
+        ``append values to spreadsheet_05a560``.done -> done
+        ``append values to spreadsheet_05a560``.result -> result
+        ``append values to spreadsheet_05a560``.failed -> failed
+        ``append values to spreadsheet_05a560``.``error message`` -> ``error message``
+    }
+
+    instance(x: 244.1, y: 46.2, stableId: "ah1xd3qyzepz1343br7imwcv") set_b03f7c root.Std_pvchbs.EphemeralStore.Set {}
+    instance(x: -670.2, y: 425.3, stableId: "laybb5d2ffctykli6nagnucb") entrypoint_534a97 root.Std_pvchbs.Std.Entrypoint {
+        entrypointName: "Generate companies to research"
+        runOnLaunch: false}
+    instance(x: -619.6, y: 46.2, stableId: "q1067txp18h8slb9y9wm46hs") entrypoint_97a5c9 root.Std_pvchbs.Std.Entrypoint {
+        entrypointName: "Create new Companies Sheet"
+        runOnLaunch: false}
+    instance(x: -485.8, y: 549.0, stableId: "d9y5mfud0jey0afn89l4wlf0") ``llm generate structured_4087dd`` root.Utils.``LLM Generate JSON`` {}
+    waypoint(x: 120.5, y: 699.0, stableId: "c4jwn2ix0cysk10yp1olcs0c") wp_24108f = values
+    instance(x: -614.7, y: 1153.2, stableId: "g10xnxjs8swvbpr7hsa84sxe") valueforkey_d19576 root.Std_pvchbs.EphemeralStore.ValueForKey {
+        value => sheetId}
+    instance(x: 1305.5, y: 1064.9, stableId: "d5n0ry9m0432tur2ht6n0o06") mergeall_350298 root.Std_pvchbs.Process.MergeAll {}
+    instance(x: 431.0, y: 1239.3, stableId: "no2n1nb38712wzgjh5f2nazf") ``search for logo_0685c6`` root.Google.``Search for Logo`` {
+        value => logoUrl}
+    instance(x: -681.7, y: 1041.4, stableId: "d11m1eo8jnhu05st5snnfdaz") entrypoint_abf7a5 root.Std_pvchbs.Std.Entrypoint {
+        entrypointName: "Enrich Company Data"
+        runOnLaunch: false}
+    instance(x: 1639.3, y: 1064.9, stableId: "hp4ci7mpvg5me2m3wuw0r0uq") log_b9c7f4 root.Std_pvchbs.Std.Log {}
+    instance(x: -249.9, y: 1065.4, stableId: "x28rl2ir9361sufiyitxf1ac") ``get spreadsheet data_0d5b56`` root.Google.``Get Spreadsheet Data`` {}
+    instance(x: 94.5, y: 1064.9, stableId: "x14lgac61h947m1tapmv1bt0") ``for each row_523e5a`` root.Google.``For Each Row`` {
+        ``Item at Index`` => value}
+    instance(x: 826.7, y: 1139.7, stableId: "stsl95stvb3zk0a8te87ejba") ``set value at row:column_85e66d`` root.Google.``Set Value at Row:Column`` {}
+    instance(x: -140.3, y: 46.2, stableId: "asqeftjfncilob7hbmo0gvrt") ``new spreadsheet_f8eb5d`` root.Google.``New Spreadsheet`` {}
+    instance(x: -51.5, y: 619.9, stableId: "z9shv4xgqubb1gtdflkolsb6") valueforkey_0e9ff1 root.Std_pvchbs.EphemeralStore.ValueForKey {}
+    instance(x: 305.1, y: 549.0, stableId: "drmovb82mecxqfbnve5i1zt4") ``append values to spreadsheet_71ced3`` root.Google.``Append Values to Spreadsheet`` {}
+    let expr_c8475b = #{"=IMAGE(\"${url}\")"#}
+    let expr_2c0846 = #{@logoUrl#}
+    let expr_2021aa = #{@value[0]#}
+    let expr_d5a8cb = #{@sheetId#}
+    comment(x: 249.2, y: -41.3, stableId: "a14mje55gyiq1y93n781zg31") "# Store a reference to the sheet ID for later use"
+    comment(x: -506.1, y: -28.7, stableId: "j11mxr4izv6dxnz9opb4m6wh") "# Create new sheet"
+    comment(x: -521.7, y: 350.3, stableId: "h4lcq2ey568wkktrm5mlxrry") "# Generate some data"
+    comment(x: -520.9, y: 958.1, stableId: "bosazh5m9029c1cdztffuc6u") "# Enrich the data"
+    "latest-sheet-id" -> set_b03f7c.key
+    "gpt-4.1-nano" -> ``llm generate structured_4087dd``.model
+    entrypoint_534a97.started -> ``llm generate structured_4087dd``.execute
+    ``llm generate structured_4087dd``.response -> wp_24108f
+    "latest-sheet-id" -> valueforkey_d19576.key
+    "Generate a list of object where each object has a name and an address and a company website.\nRespond with a JSON list of lists so that the output can be fed directly into a google sheets using the API.\n\nRespond with an object of the form: { values: <the list of lists> }\n\nMake sure the data is real, and of well known companies.\n\nDon't include any headers. Only data.\n\nGenerate 4 rows." -> ``llm generate structured_4087dd``.``user message``
+    mergeall_350298.merged -> log_b9c7f4.log
+    entrypoint_abf7a5.started -> ``get spreadsheet data_0d5b56``.run
+    valueforkey_d19576.value -> ``get spreadsheet data_0d5b56``.``spreadsheet id``
+    ``get spreadsheet data_0d5b56``.done -> ``for each row_523e5a``.spawn
+    ``get spreadsheet data_0d5b56``.result -> ``for each row_523e5a``.wp_07deaa
+    ``for each row_523e5a``.``child spawned`` -> ``search for logo_0685c6``.fetch
+    ``for each row_523e5a``.done -> mergeall_350298.merge
+    ``search for logo_0685c6``.done -> ``set value at row:column_85e66d``.run
+    ``set value at row:column_85e66d``.done -> mergeall_350298.withChildProcess
+    expr_c8475b -> ``set value at row:column_85e66d``.value
+    ``search for logo_0685c6``.value -> expr_c8475b.url
+    expr_2c0846 -> mergeall_350298.result
+    "Done enriching" -> log_b9c7f4.input
+    expr_2021aa -> ``search for logo_0685c6``.companyName
+    expr_d5a8cb -> ``set value at row:column_85e66d``.``spreadsheet id``
+    ``for each row_523e5a``.index -> ``set value at row:column_85e66d``.row
+    "D" -> ``set value at row:column_85e66d``.col
+    entrypoint_97a5c9.started -> ``new spreadsheet_f8eb5d``.run
+    ``new spreadsheet_f8eb5d``.done -> set_b03f7c.set
+    "My Companies" -> ``new spreadsheet_f8eb5d``.title
+    ``new spreadsheet_f8eb5d``.result -> set_b03f7c.value
+    "latest-sheet-id" -> valueforkey_0e9ff1.key
+    ``llm generate structured_4087dd``.continue -> ``append values to spreadsheet_71ced3``.run
+    wp_24108f -> ``append values to spreadsheet_71ced3``.values
+    valueforkey_0e9ff1.value -> ``append values to spreadsheet_71ced3``.``spreadsheet id``
 }
 
