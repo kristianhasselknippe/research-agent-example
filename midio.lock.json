@@ -1,0 +1,6 @@
+{
+  "packages": [
+    { "name": "open-ai", "version": "0.13.2" },
+    { "name": "tavily", "version": "0.1.0" }
+  ]
+}

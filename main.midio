@@ -1,0 +1,255 @@
+import("std", Std_pvchbs)
+import("http", Http_cngvqt)
+import("open-ai", ``open-ai_7339898628683819485``)
+import("tavily", tavily_1810699956422469779)
+import("web-tools", ``web-tools_18042297422711746147``)
+
+module ``Deep Research`` {
+    func SearchWeb {
+        in(x: -802.20397278989, y: 18.51902873040052, name: "search") trigger fetch
+        in(x: -804.20397278989, y: 179.6143449538448, name: "query") property(String) query
+
+        out(x: 2078.840936525261, y: 10.579853930020192, name: "done")  trigger done
+        out(x: 2078.840936525261, y: 126.9640713061431, name: "result")  property result
+        out(x: 704.3356637450795, y: 382.6528184080894, name: "failed")  trigger failed
+        out(x: 703.3261208091878, y: 499.50085959373905, name: "message")  property message
+
+        instance(x: 20.1, y: 41.1, stableId: "jtxfl3gwpoprar8toaetn2gb") search_7debd7 root.tavily_1810699956422469779.Tavily.Search {
+            message_3cc2ae => mut error}
+        instance(x: -20.1, y: -41.1, stableId: "cofcuwbbv431qipu5cd22h3l") getenvironmentvariable_7288c1 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        instance(x: 952.5, y: 130.5, stableId: "ytsa2gwga4derla9d0mljxr3") fetch_d67c17 root.Http_cngvqt.Http.Fetch {}
+        instance(x: 660.3, y: 41.1, stableId: "l11ggly8p88go2i37qnygr0p") spawnprocessesfromlist_cfbd6a root.Std_pvchbs.Process.SpawnProcessesFromList {}
+        waypoint(x: 511.3, y: 114.4, stableId: "t4go3y9azndijgbctufvy935") wp_9f429b = results
+        instance(x: 1280.4, y: 235.4, stableId: "fikga0uelq8fs74zrxw8705y") htmltomarkdown_235edd root.``web-tools_18042297422711746147``.WebTools.Convert.HtmlToMarkdown {}
+        instance(x: 1746.2, y: 41.1, stableId: "fqoiu0sd5lb0m0234azyf7lw") mergeall_e57b10 root.Std_pvchbs.Process.MergeAll {}
+        instance(x: -605.3, y: 37.1, stableId: "gazqddfoz43xdyou5hiyp1pb") complete_b7b8fd root.``Deep Research``.``LLM Generate`` {
+            error => mut error}
+        waypoint(x: -154.6, y: 100.6, stableId: "sx3pyb7o64fpqh9lronrvt0g") wp_1b49bc = content
+        instance(x: 1498.7, y: 212.6, stableId: "n4yblg3w7jtmac2uo8spqxzz") cache_442210 root.Std_pvchbs.Std.Cache {}
+        instance(x: 396.0, y: 499.5, stableId: "lxci5547r6ctnx61rspj4ny0") expression_9c234a root.Std_pvchbs.Std.Expression {}
+        let expr_cda9ab = #{item.url#}
+        let expr_e836e9 = #{@error#}
+        portal(entrance: { stableId: "np89hcvuiqmfdhheg9ank9i3", x: -154.6, y: 146.4}, exit: { stableId: "gk4hrx8f3i4gmdz4b9u7mxs3", x: 591.0, y: 440.9}) portal_221ec4 {
+            entrance_19e065 => exit_c33701
+        }
+        comment(x: 1365.3, y: 100.6, stableId: "tr3ile00ejl5juinv5ftsu3c") "Using cache here prevents the `Html to Markdown` function from being called in the main branch, which would cause it to complain about `response` being null, since `Fetch` isn't called in that branch."
+        getenvironmentvariable_7288c1.value -> search_7debd7.api_key
+        3 -> search_7debd7.chunks_per_source
+        false -> search_7debd7.include_answer
+        false -> search_7debd7.include_raw_content
+        false -> search_7debd7.include_images
+        false -> search_7debd7.include_image_descriptions
+        "TAVILY_API_KEY" -> getenvironmentvariable_7288c1.variable_name
+        search_7debd7.failed_10060b -> failed
+        "GET" -> fetch_d67c17.method
+        "text" -> fetch_d67c17.responseType
+        search_7debd7.response_0 -> wp_9f429b
+        wp_9f429b -> spawnprocessesfromlist_cfbd6a.list
+        search_7debd7.done_1 -> spawnprocessesfromlist_cfbd6a.spawn
+        spawnprocessesfromlist_cfbd6a.childSpawned -> fetch_d67c17.fetch
+        expr_cda9ab -> fetch_d67c17.url
+        spawnprocessesfromlist_cfbd6a.item -> expr_cda9ab.item
+        fetch_d67c17.response -> htmltomarkdown_235edd.html
+        spawnprocessesfromlist_cfbd6a.done -> mergeall_e57b10.merge
+        mergeall_e57b10.merged -> done
+        mergeall_e57b10.results -> result
+        "You are given a task, and you should convert it into a search query that you might put into a google search, and expect resources that provide information to answer the task.\n" -> complete_b7b8fd.``system message``
+        query -> complete_b7b8fd.``user message``
+        fetch -> complete_b7b8fd.execute
+        complete_b7b8fd.continue -> search_7debd7.fetch_2
+        complete_b7b8fd.response -> wp_1b49bc
+        wp_1b49bc -> search_7debd7.query
+        "advanced" -> search_7debd7.search_depth
+        "news" -> search_7debd7.topic_31f936
+        5 -> search_7debd7.max_results
+        fetch_d67c17.done -> cache_442210.cache
+        htmltomarkdown_235edd.markdown -> cache_442210.input
+        cache_442210.done -> mergeall_e57b10.withChildProcess
+        cache_442210.value -> mergeall_e57b10.result
+        expr_e836e9 -> expression_9c234a.expression
+        expression_9c234a.value -> message
+        complete_b7b8fd.``on error`` -> portal_221ec4.entrance_19e065
+        portal_221ec4.exit_c33701 -> failed
+    }
+
+    func ``LLM Generate`` {
+        in(x: -264.66656494140625, y: -56.99993896484375, name: "execute") trigger execute
+        in(x: -491.12832530455336, y: 102.35139044564175, name: "model") property(String) model
+        in(x: -260.66668701171875, y: 257.00006103515625, name: "system message") property ``system message``
+        in(x: -260.66668701171875, y: 338.66668701171875, name: "user message") property ``user message``
+
+        out(x: 620.3333740234375, y: -26.6666259765625, name: "continue")  trigger continue
+        out(x: 620.3333740234375, y: 91.33331298828124, name: "response")  property response
+        out(x: 631, y: 216.66668701171875, name: "on error")  trigger ``on error``
+        out(x: 659, y: 362, name: "error")  property error
+
+        instance(x: 49.4, y: 53.0, stableId: "ofmbily52vyn2x9sccqxay63") ``chat complete_166e23`` root.``open-ai_7339898628683819485``.OpenAI.``Chat Complete`` {}
+        instance(x: -49.4, y: -53.0, stableId: "y11q0dt3uplgtvk3a17m3x60") getenvironmentvariable_3c1ce8 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        instance(x: -294.5, y: 137.4, stableId: "d147514gk77yuwmcv1utg9op") orelse_1567fb root.Std_pvchbs.Std.OrElse {}
+        let expr_94a0a8 = #{"gpt-4.1-nano"#}
+        getenvironmentvariable_3c1ce8.value -> ``chat complete_166e23``.``api key_fba846``
+        1 -> ``chat complete_166e23``.temperature_5a6319
+        execute -> ``chat complete_166e23``.execute_f48897
+        ``system message`` -> ``chat complete_166e23``.system_message_7d9447
+        ``user message`` -> ``chat complete_166e23``.user_message_f55996
+        ``chat complete_166e23``.continue_424660 -> continue
+        ``chat complete_166e23``.response_fdbba8 -> response
+        ``chat complete_166e23``.``on error_61174a`` -> ``on error``
+        ``chat complete_166e23``.error_3ce8b8 -> error
+        expr_94a0a8 -> orelse_1567fb.second
+        model -> orelse_1567fb.first
+        orelse_1567fb.value -> ``chat complete_166e23``.model_596244
+        "OPEN_AI_API_KEY_VAR" -> getenvironmentvariable_3c1ce8.variable_name
+    }
+
+    func ``Generate Research Tasks`` {
+        in(x: 51.745161290322585, y: -135.50108741021927, name: "execute") trigger execute
+        in(x: 49.745161290322585, y: 361.6344003985005, name: "user message") property(String) ``user message``
+
+        out(x: 743.6022082913303, y: -90.53331101940528, name: "continue")  trigger continue
+        out(x: 743.6022082913303, y: 25.595721238659223, name: "response")  property response
+
+        instance(x: 293.0, y: -74.6, stableId: "npcghz2x8tp3g8yk12g422p5") ``chat complete_067092`` root.``open-ai_7339898628683819485``.OpenAI.``Chat Complete`` {}
+        data_instance(x: -415.3, y: 27.1, stableId: "mwv1n23nawf47s4mlnc8qtxk") data_f0bb9d  = {
+                name: "AgentDeployments",
+                description: "A list of agents to deploy, which agents and what their task is.",
+                schema: {
+                    agents: [
+                        {
+                            name: "WebResearchAgent",
+                            task: "A description of what the agent should research."
+                        }
+                    ]
+                }
+            }
+        instance(x: 252.9, y: -169.2, stableId: "cbcpra1rvvqctkj0o21hiko6") getenvironmentvariable_aa5ac2 root.Std_pvchbs.Environment.GetEnvironmentVariable {}
+        comment(x: -254.7, y: -67.0, stableId: "uc7hhowx6of9pvvp2ksbtozz") "# Function: Generate Research Tasks"
+        data_f0bb9d -> ``chat complete_067092``.``response format_1a4c38``
+        getenvironmentvariable_aa5ac2.value -> ``chat complete_067092``.``api key_fba846``
+        1 -> ``chat complete_067092``.temperature_5a6319
+        "gpt-4.1-mini" -> ``chat complete_067092``.model_596244
+        execute -> ``chat complete_067092``.execute_f48897
+        ``chat complete_067092``.continue_424660 -> continue
+        ``chat complete_067092``.response_fdbba8 -> response
+        ``user message`` -> ``chat complete_067092``.user_message_f55996
+        "You are a senior researcher. \nBreak the following question into **distinct, non‑overlapping** web research tasks. \nSpawn at least 3 tasks, at most 6.\nReturn an array of objects that conforms to the provided JSON Schema\"\"\"\"\"" -> ``chat complete_067092``.system_message_7d9447
+        "OPEN_AI_API_KEY_VAR" -> getenvironmentvariable_aa5ac2.variable_name
+    }
+
+    func ``Search Web and Summarize`` {
+        in(x: -378.8196190588949, y: -44.481015842946874, name: "search") trigger search
+        in(x: -481.29453481140314, y: 130.1, name: "item") property(Any) item
+
+        out(x: 802.7815320105135, y: -82.82173412492386, name: "continue")  trigger continue
+        out(x: 806.3679553119404, y: 132.84683568792616, name: "on error")  trigger ``on error``
+        out(x: 802.7815320105135, y: 40.92316144656938, name: "response")  property response
+
+        instance(x: -121.4, y: 0.0, stableId: "l12x2bz6nkikdejf2x987lgl") searchweb_1ef910 root.``Deep Research``.SearchWeb {}
+        instance(x: 168.5, y: 0.0, stableId: "thpu3jpul7rhkl830pjfom9l") complete_2197f8 root.``Deep Research``.``LLM Generate`` {}
+        waypoint(x: -306.8, y: 157.1, stableId: "m33qdsj8a7h3qcghgzzjk7fh") wp_00ca28 = task
+        let expr_6d66ce = #{"<data>
+  ${data}
+</data>
+<task>
+  ${task}
+</task>
+"#}
+        portal(entrance: { stableId: "n74avb30fgy585ubneqyqqop", x: 16.4, y: 174.8}, exit: { stableId: "uh1t6t5prx71u3t44gzmkiq7", x: 659.3, y: 174.8}) portal_0f2160 {
+            entrance_3a132a => exit_768048
+        }
+        comment(x: 170.8, y: -102.8, stableId: "y9lpsfrbxzalc7qjcf56d9r4") "# Function: Search Web and Summarize"
+        searchweb_1ef910.done -> complete_2197f8.execute
+        "You are a web research summarizer agent.\n\nThe user will provide you the result of a web search, as well a description of a research task that you are tasked with addressing.\n\nUse the web search results and task description to create a summary. Expect the output\nof your summary to be used by another agent which will combine it with other search results performed by other agents similar to you." -> complete_2197f8.``system message``
+        "gpt-4.1-nano" -> complete_2197f8.model
+        search -> searchweb_1ef910.fetch
+        complete_2197f8.continue -> continue
+        complete_2197f8.``on error`` -> ``on error``
+        complete_2197f8.response -> response
+        item -> wp_00ca28
+        wp_00ca28 -> searchweb_1ef910.query
+        expr_6d66ce -> complete_2197f8.``user message``
+        searchweb_1ef910.result -> expr_6d66ce.data
+        wp_00ca28 -> expr_6d66ce.task
+        searchweb_1ef910.failed -> portal_0f2160.entrance_3a132a
+        portal_0f2160.exit_768048 -> ``on error``
+    }
+
+    func ``Create Final Response`` {
+        in(x: -741.1833740234375, y: -86.33334350585935, name: "execute") trigger execute
+        in(x: -230.85, y: 50.62843908342893, name: "model") property(String) model
+        in(x: -477.1833740234375, y: 145.48092181222228, name: "data") property(List) input
+        in(x: -230.85, y: 240.3334045410156, name: "user query") property(String) userQuery
+
+        out(x: 587.85, y: -119.55735663364568, name: "continue")  trigger continue
+        out(x: 587.85, y: 6.442643366354332, name: "response")  property response
+        out(x: 587.85, y: 90.44264336635432, name: "on error")  trigger ``on error``
+        out(x: 587.85, y: 216.44264336635433, name: "error")  property error
+
+        instance(x: -257.9, y: 145.5, stableId: "tsw6y1vfad1ty6ch2vfo285s") removenullvalues_a8ba37 root.Std_pvchbs.List.RemoveNullValues {}
+        instance(x: 54.5, y: -54.2, stableId: "a1k5az8k1wtqcznza14zp9pg") complete_7bbe9e root.``Deep Research``.``LLM Generate`` {}
+        instance(x: -551.3, y: -86.3, stableId: "awp4cjkq02gsgdq2sn0e07bg") starttrace_72d1bf root.Std_pvchbs.Tracing.StartTrace {}
+        instance(x: -257.3, y: -86.3, stableId: "pwxjlz72zlqmm7f5pahcojgs") setprocesscurrenttrace_75fff5 root.Std_pvchbs.Tracing.SetProcessCurrentTrace {}
+        let expr_c5bfe2 = #{"<data>
+  ${data}
+</data>
+<user_query>
+  ${userQuery}
+</user_query>"#}
+        comment(x: 52.0, y: -143.7, stableId: "c5gfzt9y1hr7lbqwtei1521t") "# Function: Create Final Response"
+        "You are a deep research summarizer agent. You are given a bunch of summaries based by other agents,\nwhich have been tasked by searching the web and other \nresources to find useful information related to the users query.\n\nYou should create a final summary, based on all the information provided to you by these other agents.\n\nYou are also provided the users original query, so you know what the goal is.\n\nYou should try, as much as possible, to base your answer on the data you are provided,\nand only fill in knowledge gaps with your built in knowledge if absolutely required. Of course,\nyou should act as if you are an expert in the field.\n\nProvide links from the search results where applicable, so that the user can dig into the references you are basing your statements on.\n\nFormat your response using markdown. Add appropriate headers and use other markdown constructs if it makes things more readable, like tables and bullet points.\n\nMake your response pretty thurough." -> complete_7bbe9e.``system message``
+        input -> removenullvalues_a8ba37.input
+        complete_7bbe9e.continue -> continue
+        complete_7bbe9e.``on error`` -> ``on error``
+        complete_7bbe9e.response -> response
+        complete_7bbe9e.error -> error
+        expr_c5bfe2 -> complete_7bbe9e.``user message``
+        userQuery -> expr_c5bfe2.userQuery
+        removenullvalues_a8ba37.result -> expr_c5bfe2.data
+        model -> complete_7bbe9e.model
+        execute -> starttrace_72d1bf.start
+        "Final response" -> starttrace_72d1bf.name
+        starttrace_72d1bf.started -> setprocesscurrenttrace_75fff5.set
+        starttrace_72d1bf.trace -> setprocesscurrenttrace_75fff5.trace
+        setprocesscurrenttrace_75fff5.done -> complete_7bbe9e.execute
+    }
+
+    instance(x: 638.7, y: 483.7, stableId: "vrbpu4nay3yo59cwxiy1ic2b") spawnprocessesfromlist_30487a root.Std_pvchbs.Process.SpawnProcessesFromList {}
+    instance(x: 1361.1, y: 483.7, stableId: "eim5nl1vrsv2nrqb36077vyk") mergeall_9a070a root.Std_pvchbs.Process.MergeAll {}
+    instance(x: 619.6, y: 353.6, stableId: "kfnq6idd0lwmcpyx6xa2cjrg") ``generate research tasks_01d90b`` root.``Deep Research``.``Generate Research Tasks`` {
+        response => response}
+    instance(x: 1054.8, y: 554.5, stableId: "d6b8zsfw55v1bjzrsu0iuz95") ``search web and summarize_f33570`` root.``Deep Research``.``Search Web and Summarize`` {}
+    instance(x: 1667.5, y: 471.3, stableId: "h6fa8vstlmeesl71qpjhmr9n") ``create final response_71a94c`` root.``Deep Research``.``Create Final Response`` {}
+    setter(x: 164.3, y: 450.2, stableId: "qley41stlfrztgr99thb84w4", name: "setter_fbb0a0") setter_fbb0a0 = userQuery
+    instance(x: 162.1, y: 297.6, stableId: "t66wq4ozenns10cjttiqxjpj") endpoint_a17c82 root.Http_cngvqt.Http.Endpoint {
+        path: "/search"
+        method: "GET"
+        accept: "text"}
+    instance(x: 2023.4, y: 448.5, stableId: "idb2fc7d5yvrybg9pze2tk3d") respondto_9a07ed root.Http_cngvqt.Http.RespondTo {}
+    let expr_94c634 = #{@userQuery#}
+    let expr_627554 = #{"gpt-4.1"#}
+    let expr_255d70 = #{@userQuery#}
+    let expr_81690d = #{@response.agents#}
+    comment(x: 652.7, y: 289.9, stableId: "kdnhb2ph6xnz669sh2pfilaj") "# 1. Generate Tasks"
+    comment(x: 1054.8, y: 680.2, stableId: "jm3vz0vz4ym8f4xhepi86taw") "# 2. Search and Summarize\n\nEach task is handled concurrently\n"
+    comment(x: 1666.1, y: 390.9, stableId: "ernl20v48web6ipu1cti61gk") "# 3. Create final summary and response"
+    spawnprocessesfromlist_30487a.done -> mergeall_9a070a.merge
+    ``generate research tasks_01d90b``.continue -> spawnprocessesfromlist_30487a.spawn
+    expr_94c634 -> ``generate research tasks_01d90b``.``user message``
+    spawnprocessesfromlist_30487a.childSpawned -> ``search web and summarize_f33570``.search
+    ``search web and summarize_f33570``.continue -> mergeall_9a070a.withChildProcess
+    ``search web and summarize_f33570``.``on error`` -> mergeall_9a070a.withChildProcess
+    ``search web and summarize_f33570``.response -> mergeall_9a070a.result
+    spawnprocessesfromlist_30487a.item -> ``search web and summarize_f33570``.item
+    mergeall_9a070a.merged -> ``create final response_71a94c``.execute
+    mergeall_9a070a.results -> ``create final response_71a94c``.input
+    expr_627554 -> ``create final response_71a94c``.model
+    expr_255d70 -> ``create final response_71a94c``.userQuery
+    expr_81690d -> spawnprocessesfromlist_30487a.list
+    "What is the biggest hype in tech at the moment?" -> setter_fbb0a0.new_value
+    setter_fbb0a0.continue -> ``generate research tasks_01d90b``.execute
+    endpoint_a17c82.gotRequest -> setter_fbb0a0.execute
+    200 -> respondto_9a07ed.status
+    ``create final response_71a94c``.continue -> respondto_9a07ed.respond
+    ``create final response_71a94c``.response -> respondto_9a07ed.body
+}
+
