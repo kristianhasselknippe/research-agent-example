@@ -1,1 +1,1 @@
-{"name":"dsltahi821fkk27kkk46iv7n","version":"0.1.0","authors":[],"keywords":[],"categories":[],"main":"main.midio","include_files":["main.midio"],"dependencies":{"arxiv":"*","tavily":"*","mistral":"*","open-ai":"*"},"meta":{}}
+{"name":"dsltahi821fkk27kkk46iv7n","version":"0.1.0","authors":[],"keywords":[],"categories":[],"main":"main.midio","include_files":["main.midio"],"dependencies":{"gmail":"*","google-drive":"*","google-docs":"*","tavily":"*","arxiv":"*","mistral":"*","notion":"*","google-sheets":"*","open-ai":"*"},"meta":{}}
